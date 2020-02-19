@@ -1,6 +1,5 @@
-package com.masoud.reactivejava;
+package com.masoud.reactivejava.controller;
 
-import com.masoud.reactivejava.controller.LinkController;
 import com.masoud.reactivejava.service.LinkService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
