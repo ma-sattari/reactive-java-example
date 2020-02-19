@@ -4,9 +4,9 @@ import com.masoud.reactivejava.model.CreateLinkRequest;
 import com.masoud.reactivejava.model.CreateLinkResponse;
 import com.masoud.reactivejava.service.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -21,4 +21,15 @@ public class LinkController {
                 .map(CreateLinkResponse::new);
 //        return Mono.just(new CreateLinkResponse("http://localhost:8080/asdf1234"));
     }
+
+    @GetMapping("/{key}")
+    public Mono<ResponseEntity<Object>> getLink (@PathVariable String key){
+        return linkService.getOriginalLink(key)
+                .map(link -> ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT)
+                .header("Location",link.getOriginalLink())
+                .build())
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.masoud.reactivejava.controller;
 
+import com.masoud.reactivejava.model.Link;
 import com.masoud.reactivejava.service.LinkService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ public class LinkControllerTest {
     private LinkService linkService;
 
     @Test
-    public void shortenLink(){
+    public void shortenLink() {
         when(linkService.shortenLink("https://spring.io")).thenReturn(Mono.just("http://localhost:8080/asdf1234"));
         webTestClient.post()
                 .uri("/link")
@@ -38,5 +39,18 @@ public class LinkControllerTest {
                 .expectBody()
                 .jsonPath("$.shortenedLink")
                 .value(val -> assertThat(val).isEqualTo("http://localhost:8080/asdf1234"));
+    }
+
+    @Test
+    public void redirectsToOriginalLink() {
+        when(linkService.getOriginalLink("asdf1234")).thenReturn(Mono.just(new Link("https//spring.io","asdf1234")));
+        webTestClient.get()
+                .uri("/asdf1234")
+                .exchange()
+                .expectStatus()
+                .isPermanentRedirect()
+                .expectHeader()
+                .value("Location", location -> assertThat(location).isEqualTo("https//spring.io"));
+
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -30,5 +31,9 @@ public class LinkService {
 
     public LinkService(LinkRepository linkRepository) {
         this.linkRepository = linkRepository;
+    }
+
+    public Mono<Link> getOriginalLink(String key) {
+        return linkRepository.findByKey(key);
     }
 }
